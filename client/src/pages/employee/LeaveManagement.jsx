@@ -10,7 +10,17 @@ export default function LeaveManagement() {
   async function load() {
     const [reqRes, balRes] = await Promise.all([getMyRequests(), getBalance()]);
     setRequests(reqRes.data || []);
-    setBalance(balRes.data || []);
+    
+    const balData = balRes.data;
+    if (balData && balData.balance) {
+      setBalance([
+        { type: 'casual', remaining: balData.balance.casual, allocated: balData.entitlement.casualPerYear, used: balData.used.casual },
+        { type: 'sick', remaining: balData.balance.sick, allocated: balData.entitlement.sickPerYear, used: balData.used.sick },
+        { type: 'paid', remaining: balData.balance.paid, allocated: balData.entitlement.paidPerYear, used: balData.used.paid },
+      ]);
+    } else {
+      setBalance([]);
+    }
   }
 
   useEffect(() => {

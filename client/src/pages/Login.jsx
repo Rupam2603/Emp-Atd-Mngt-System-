@@ -13,8 +13,12 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      await login(email, password);
-      navigate('/employee/dashboard');
+      const data = await login(email, password);
+      if (data.user?.role === 'hr') {
+        navigate('/hr/dashboard');
+      } else {
+        navigate('/employee/dashboard');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
